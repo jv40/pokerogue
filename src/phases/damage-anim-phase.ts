@@ -66,6 +66,7 @@ export class DamageAnimPhase extends PokemonPhase {
       globalScene.damageNumberHandler.add(this.getPokemon(), this.amount, this.damageResult, this.critical);
     }
 
+    const targetHp = this.getPokemon().getHp() + this.amount;
     if (this.damageResult !== HitResult.INDIRECT && this.amount > 0) {
       const flashTimer = globalScene.time.addEvent({
         delay: 100,
@@ -77,14 +78,14 @@ export class DamageAnimPhase extends PokemonPhase {
             .setVisible(flashTimer.repeatCount % 2 === 0);
           if (!flashTimer.repeatCount) {
             this.getPokemon()
-              .updateInfo()
+              .updateInfo(targetHp)
               .then(() => this.end());
           }
         },
       });
     } else {
       this.getPokemon()
-        .updateInfo()
+        .updateInfo(targetHp)
         .then(() => this.end());
     }
   }
