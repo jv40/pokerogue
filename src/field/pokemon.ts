@@ -1665,8 +1665,12 @@ export abstract class Pokemon extends Phaser.GameObjects.Container {
    * @param precise - Whether to return the exact HP ratio (e.g. `0.54321`), or one rounded to the nearest %; default `false`
    * @returns The current HP ratio
    */
-  getHpRatio(precise = false): number {
-    return precise ? this.hp / this.getMaxHp() : Math.round((this.hp / this.getMaxHp()) * 100) / 100;
+  getHpRatio(precise = false, finalHp?: number): number {
+    if (finalHp !== undefined){
+      return precise ? finalHp / this.getMaxHp() : Math.round((finalHp / this.getMaxHp()) * 100) / 100;
+    } else {
+      return precise ? this.hp / this.getMaxHp() : Math.round((this.hp / this.getMaxHp()) * 100) / 100;
+    }
   }
 
   /**
