@@ -545,8 +545,14 @@ export abstract class BattleInfo extends Phaser.GameObjects.Container {
   }
 
   /** Update the pokemonHp bar */
-  protected updatePokemonHp(pokemon: Pokemon, resolve: (r: void | PromiseLike<void>) => void, instant?: boolean): void {
-    let duration = !instant ? Phaser.Math.Clamp(Math.abs(this.lastHp - pokemon.hp) * 5, 250, 5000) : 0;
+  protected updatePokemonHp(pokemon: Pokemon, resolve: (r: void | PromiseLike<void>) => void, instant?: boolean, targetHp?: number): void {
+    let finalHp: number;
+    if (targetHp !== undefined) {
+      finalHp = targetHp;
+    } else {
+      finalHp = pokemon.hp;
+    }   
+    let duration = !instant ? Phaser.Math.Clamp(Math.abs(this.lastHp - finalHp) * 5, 250, 5000) : 0;
     const speed = globalScene.hpBarSpeed;
     if (speed) {
       duration = speed >= 3 ? 0 : duration / Math.pow(2, speed);
@@ -554,7 +560,7 @@ export abstract class BattleInfo extends Phaser.GameObjects.Container {
     globalScene.tweens.add({
       targets: this.hpBar,
       ease: "Sine.easeOut",
-      scaleX: pokemon.getHpRatio(true),
+      scaleX: pokemon.getHpRatio(true, finalHp),
       duration,
       onUpdate: () => {
         this.onHpTweenUpdate(pokemon);
